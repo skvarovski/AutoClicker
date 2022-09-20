@@ -3,7 +3,6 @@ package com.github.nestorm001.autoclicker
 import android.content.Context
 import android.util.Log
 
-
 /**
  * Created on 2018/9/28.
  * By nesto

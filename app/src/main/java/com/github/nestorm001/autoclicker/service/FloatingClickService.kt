@@ -18,7 +18,6 @@ import com.github.nestorm001.autoclicker.logd
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-
 /**
  * Created on 2018/9/28.
  * By nesto
@@ -42,29 +41,34 @@ class FloatingClickService : Service() {
         startDragDistance = dp2px(10f)
         view = LayoutInflater.from(this).inflate(R.layout.widget, null)
 
-        //setting the layout parameters
+        // setting the layout parameters
         val overlayParam =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                } else {
-                    WindowManager.LayoutParams.TYPE_PHONE
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            } else {
+                WindowManager.LayoutParams.TYPE_PHONE
+            }
         params = WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                overlayParam,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT)
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            overlayParam,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            PixelFormat.TRANSLUCENT
+        )
 
-
-        //getting windows services and adding the floating view to it
+        // getting windows services and adding the floating view to it
         manager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         manager.addView(view, params)
 
-        //adding an touchlistener to make drag movement of the floating widget
-        view.setOnTouchListener(TouchAndDragListener(params, startDragDistance,
+        // adding an touchlistener to make drag movement of the floating widget
+        view.setOnTouchListener(
+            TouchAndDragListener(
+                params,
+                startDragDistance,
                 { viewOnClick() },
-                { manager.updateViewLayout(view, params) }))
+                { manager.updateViewLayout(view, params) }
+            )
+        )
     }
 
     private var isOn = false
@@ -72,16 +76,19 @@ class FloatingClickService : Service() {
         if (isOn) {
             timer?.cancel()
         } else {
-            timer = fixedRateTimer(initialDelay = 0,
-                    period = 200) {
+            timer = fixedRateTimer(
+                initialDelay = 0,
+                period = 2000
+            ) {
                 view.getLocationOnScreen(location)
-                autoClickService?.click(location[0] + view.right + 10,
-                        location[1] + view.bottom + 10)
+                autoClickService?.click(
+                    location[0] + view.right + 10,
+                    location[1] + view.bottom + 10
+                )
             }
         }
         isOn = !isOn
         (view as TextView).text = if (isOn) "ON" else "OFF"
-
     }
 
     override fun onDestroy() {
@@ -91,8 +98,10 @@ class FloatingClickService : Service() {
         manager.removeView(view)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        //if (newConfig != null) {
+            super.onConfigurationChanged(newConfig)
+        //}
         "FloatingClickService onConfigurationChanged".logd()
         val x = params.x
         val y = params.y

@@ -8,30 +8,38 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
+import androidx.appcompat.app.AppCompatActivity
+import com.github.nestorm001.autoclicker.databinding.ActivityMainBinding
 import com.github.nestorm001.autoclicker.service.FloatingClickService
 import com.github.nestorm001.autoclicker.service.autoClickService
-import kotlinx.android.synthetic.main.activity_main.*
-
 
 private const val PERMISSION_CODE = 110
 
 class MainActivity : AppCompatActivity() {
 
     private var serviceIntent: Intent? = null
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        button.setOnClickListener {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-                    || Settings.canDrawOverlays(this)) {
-                serviceIntent = Intent(this@MainActivity,
-                        FloatingClickService::class.java)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.button.setOnClickListener {
+            Log.d("TEST","Start click")
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N ||
+                Settings.canDrawOverlays(this)
+            ) {
+                serviceIntent = Intent(
+                    this@MainActivity,
+                    FloatingClickService::class.java
+                )
                 startService(serviceIntent)
+                Log.d("TEST","Start")
                 onBackPressed()
             } else {
+                Log.d("TEST","Ask permission")
                 askPermission()
                 shortToast("You need System Alert Window Permission to do this")
             }
@@ -57,16 +65,19 @@ class MainActivity : AppCompatActivity() {
         if (!hasPermission) {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !Settings.canDrawOverlays(this)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            !Settings.canDrawOverlays(this)
+        ) {
             askPermission()
         }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private fun askPermission() {
-        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName"))
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:$packageName")
+        )
         startActivityForResult(intent, PERMISSION_CODE)
     }
 

@@ -9,10 +9,12 @@ import android.view.WindowManager
  * Created on 2018/9/30.
  * By nesto
  */
-class TouchAndDragListener(private val params: WindowManager.LayoutParams,
-                           private val startDragDistance: Int = 10,
-                           private val onTouch: Action?,
-                           private val onDrag: Action?) : View.OnTouchListener {
+class TouchAndDragListener(
+    private val params: WindowManager.LayoutParams,
+    private val startDragDistance: Int = 10,
+    private val onTouch: Action?,
+    private val onDrag: Action?
+) : View.OnTouchListener {
     private var initialX: Int = 0
     private var initialY: Int = 0
     private var initialTouchX: Float = 0.toFloat()
@@ -20,9 +22,13 @@ class TouchAndDragListener(private val params: WindowManager.LayoutParams,
     private var isDrag = false
 
     private fun isDragging(event: MotionEvent): Boolean =
-            ((Math.pow((event.rawX - initialTouchX).toDouble(), 2.0)
-                    + Math.pow((event.rawY - initialTouchY).toDouble(), 2.0))
-                    > startDragDistance * startDragDistance)
+        (
+            (
+                Math.pow((event.rawX - initialTouchX).toDouble(), 2.0) +
+                    Math.pow((event.rawY - initialTouchY).toDouble(), 2.0)
+                )
+            > startDragDistance * startDragDistance
+            )
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {

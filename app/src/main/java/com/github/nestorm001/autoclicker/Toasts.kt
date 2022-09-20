@@ -1,10 +1,10 @@
 package com.github.nestorm001.autoclicker
 
-import android.content.Context
+import android.content.Context // ktlint-disable import-ordering
 import android.os.Looper
-import android.support.annotation.IntDef
-import android.support.annotation.StringRes
 import android.widget.Toast
+import androidx.annotation.IntDef
+import androidx.annotation.StringRes
 
 /**
  * Created on 2017/1/6.
@@ -13,7 +13,7 @@ import android.widget.Toast
 private var toast: Toast? = null
 
 private fun Context.showToast(text: String, @Duration length: Int = Toast.LENGTH_SHORT) {
-    //先检查是否在主线程中运行，再进行处理
+    // 先检查是否在主线程中运行，再进行处理
     if (Looper.myLooper() == Looper.getMainLooper()) {
         toast = toast ?: Toast.makeText(this.applicationContext, text, length)
         toast?.let {
@@ -27,7 +27,7 @@ private fun Context.showToast(text: String, @Duration length: Int = Toast.LENGTH
 }
 
 internal fun Context.errorToast(e: Throwable) {
-    showToast(e.localizedMessage)
+    showToast(e.localizedMessage!!)
 }
 
 internal fun Context.longToast(text: String) {

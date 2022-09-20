@@ -33,8 +33,10 @@ class AutoClickService : AccessibilityService() {
         super.onServiceConnected()
         "onServiceConnected".logd()
         autoClickService = this
-        startActivity(Intent(this, MainActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        startActivity(
+            Intent(this, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
     }
 
     fun click(x: Int, y: Int) {
@@ -44,8 +46,8 @@ class AutoClickService : AccessibilityService() {
         path.moveTo(x.toFloat(), y.toFloat())
         val builder = GestureDescription.Builder()
         val gestureDescription = builder
-                .addStroke(GestureDescription.StrokeDescription(path, 10, 10))
-                .build()
+            .addStroke(GestureDescription.StrokeDescription(path, 10, 1000))
+            .build()
         dispatchGesture(gestureDescription, null, null)
     }
 
@@ -64,7 +66,6 @@ class AutoClickService : AccessibilityService() {
         autoClickService = null
         return super.onUnbind(intent)
     }
-
 
     override fun onDestroy() {
         "AutoClickService onDestroy".logd()
